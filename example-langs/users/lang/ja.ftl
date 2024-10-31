@@ -1,0 +1,1 @@
+username = ユーザー名 {$username}

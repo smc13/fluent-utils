@@ -1,0 +1,50 @@
+{
+  "name": "@anchanix/fluent-utils",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "bin": {
+    "fluent-utils": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "release": "bumpp",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.8.0",
+    "@fluent/bundle": "^0.18.0",
+    "@fluent/syntax": "^0.19.0",
+    "@types/node": "^22.7.9",
+    "bumpp": "^9.8.0",
+    "chalk": "^5.3.0",
+    "citty": "^0.1.6",
+    "consola": "^3.2.3",
+    "es-toolkit": "^1.25.2",
+    "eslint": "^9.13.0",
+    "tinyglobby": "^0.2.10",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
+  }
+}
