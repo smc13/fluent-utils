@@ -65,9 +65,13 @@ export const types = defineCommand({
     const fileContent = exportTypescript(mergeParsed(...infos), Array.from(langs))
     if (!args.dry) {
       let output = args.output
-      const stats = statSync(args.output)
-      if (stats.isDirectory()) {
-        output = `${args.output}/fluent.ts`
+      // if the output is an existing directory, append the default file name
+      try {
+        if (statSync(output).isDirectory()) {
+          output = `${output}/fluent.d.ts`
+        }
+      } catch (e) {
+        //  ignore the error, the path probably doesn't exist, so we'll just use the output as is
       }
 
       writeFileSync(output, fileContent)
