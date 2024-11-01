@@ -1,6 +1,6 @@
 {
   "name": "@anchanix/fluent-utils",
-  "version": "1.0.0",
+  "version": "0.1.0-beta.0",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -28,7 +28,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
-    "release": "bumpp",
+    "release": "bumpp && npm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
