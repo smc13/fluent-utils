@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      magic-string:
+        specifier: ^0.30.12
+        version: 0.30.12
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^3.8.0

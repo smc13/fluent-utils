@@ -1,31 +1,38 @@
 import type { KeyedParsedPlaceable } from '../utils/merge'
 import { FLUENT_BUILTIN_FUNCTIONS, PREAMBLE } from '../const'
+import MagicString from 'magic-string'
 
 export default function (data: KeyedParsedPlaceable, langs: string[] = [], prefix: string = 'Fluent') {
-  const output = [PREAMBLE]
+  const output = new MagicString(PREAMBLE)
+
+  output.append(`import { FluentVariable } from '@fluent/bundle';\n`)
+  output.append(`import { FluentMessageInfo } from '@anchanix/fluent-utils';\n`)
+  output.append('\n')
 
   // export functions
-  output.push(`export type ${prefix}BuiltinFunctions = ${FLUENT_BUILTIN_FUNCTIONS.map(f => `'${f}'`).join(' | ')}\n`)
-  output.push(...exportCustomFunctions(data, prefix))
+  output.append(`export type ${prefix}Functions = ${FLUENT_BUILTIN_FUNCTIONS.map(f => `'${f}'`).join(' | ')}\n`)
+  output.append(exportCustomFunctions(data, prefix))
+  output.append('\n')
 
-  output.push(`export type ${prefix}Langs = ${langs.map(lang => `'${lang}'`).join(' | ')}\n`)
+  // export used languages
+  output.append(`export type ${prefix}Langs = ${langs.map(lang => `'${lang}'`).join(' | ')}\n`)
+  output.append('\n')
 
   // export all keys
-  output.push(`export type ${prefix}Keys = {`)
+  output.append(`export type ${prefix}MessageKeys = {\n`)
   for (const [key, keyInfo] of data) {
     let variables = 'undefined'
     if (keyInfo.variables.size > 0) {
-      // variables = `{ ${keyInfo.variables.map(arg => `${arg}: any`).join(', ')} }`
-      variables = `[${Array.from(keyInfo.variables).map(arg => `'${arg}'`).join(', ')}]`
+      variables = `{${Array.from(keyInfo.variables).map(arg => `${arg}: FluentVariable`).join(', ')}}`
     }
 
-    const attributes = Array.from(keyInfo.attributes).map(attr => `'${attr}'`).join(', ')
+    const attributes = `{${Array.from(keyInfo.attributes).map(attr => `'${attr}': string`).join(', ')}}`
 
-    output.push(`  '${key}': { variables: ${variables}, attributes: [${attributes}] };`)
+    output.append(`  '${key}': FluentMessageInfo<'${key}', ${variables}, ${attributes}>\n`)
   }
 
-  output.push('}')
-  return output.join('\n')
+  output.append('}\n')
+  return output.toString()
 }
 
 function exportCustomFunctions(data: KeyedParsedPlaceable, prefix: string) {
@@ -39,8 +46,8 @@ function exportCustomFunctions(data: KeyedParsedPlaceable, prefix: string) {
   }
 
   if (customFunctions.size === 0) {
-    return []
+    return ''
   }
 
-  return [`export type ${prefix}CustomFunctions = ${Array.from(customFunctions).map(f => `'${f}'`).join(' | ')}\n`]
+  return `export type ${prefix}CustomFunctions = ${Array.from(customFunctions).map(f => `'${f}'`).join(' | ')}\n`
 }
